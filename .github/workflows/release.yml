@@ -26,4 +26,4 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: nuget push
-      run: dotnet nuget push './aadog.PInvoke.LibGum/bin/Debug/aadog.PInvoke.LibGum.${{ github.event.inputs.FRIDA_VERSION }}.nupkg' --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push './aadog.PInvoke.LibGum/bin/Release/aadog.PInvoke.LibGum.${{ github.event.inputs.FRIDA_VERSION }}.nupkg' --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json
