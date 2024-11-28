@@ -2,8 +2,8 @@
 using aadog.PInvoke.LibGum.Enums;
 
 namespace aadog.PInvoke.LibGum
-{
-    public partial struct LibGum
+{ 
+    public partial class LibGum
     {
         const string DllName = "Gum";
 #if Windows
