@@ -10,39 +10,39 @@ public unsafe struct GumInvocationContext
     {
         IntPtr result;
         fixed(GumInvocationContext* p=&this)
-            result= LibGum.gum_invocation_context_get_nth_argument(p, n);
+            result= LibGumFunctions.gum_invocation_context_get_nth_argument(p, n);
         return result;
     }
     public IntPtr getReturnAddress(uint n)
     {
         IntPtr result;
         fixed (GumInvocationContext* p = &this)
-            result = LibGum.gum_invocation_context_get_return_address(p);
+            result = LibGumFunctions.gum_invocation_context_get_return_address(p);
         return result;
     }
     public IntPtr getReturnValue(uint n)
     {
         IntPtr result;
         fixed (GumInvocationContext* p = &this)
-            result =LibGum.gum_invocation_context_get_return_value(p);
+            result = LibGumFunctions.gum_invocation_context_get_return_value(p);
         return result;
     }
     public GumThreadId getThreadId(uint n)
     {
         GumThreadId result;
         fixed (GumInvocationContext* p = &this)
-            result = LibGum.gum_invocation_context_get_thread_id(p);
+            result = LibGumFunctions.gum_invocation_context_get_thread_id(p);
         return result;
     }
     public void ReplaceArg(uint n, IntPtr v)
     {
         fixed (GumInvocationContext* p = &this)
-            LibGum.gum_invocation_context_replace_nth_argument(p, n, v);
+            LibGumFunctions.gum_invocation_context_replace_nth_argument(p, n, v);
     }
     public void ReplaceReturnValue(IntPtr v)
     {
         fixed (GumInvocationContext* p = &this)
-            LibGum.gum_invocation_context_replace_return_value(p, v);
+            LibGumFunctions.gum_invocation_context_replace_return_value(p, v);
     }
 
     public IntPtr GetListenerFunctionData()
@@ -50,7 +50,7 @@ public unsafe struct GumInvocationContext
         IntPtr result;
         fixed (GumInvocationContext* p = &this)
         {
-            result= LibGum.gum_invocation_context_get_listener_function_data(p);
+            result= LibGumFunctions.gum_invocation_context_get_listener_function_data(p);
         }
         return result;
     }
@@ -59,7 +59,7 @@ public unsafe struct GumInvocationContext
         IntPtr result;
         fixed (GumInvocationContext* p = &this)
         {
-            result =LibGum.gum_invocation_context_get_listener_invocation_data(p, size);
+            result = LibGumFunctions.gum_invocation_context_get_listener_invocation_data(p, size);
         }
         return result;
     }
@@ -68,7 +68,7 @@ public unsafe struct GumInvocationContext
         IntPtr result;
         fixed (GumInvocationContext* p = &this)
         {
-            result = LibGum.gum_invocation_context_get_listener_thread_data(p, 8);
+            result = LibGumFunctions.gum_invocation_context_get_listener_thread_data(p, 8);
         }
         return result;
     }

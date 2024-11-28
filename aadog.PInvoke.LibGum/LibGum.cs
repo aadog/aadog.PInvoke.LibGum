@@ -3,7 +3,7 @@ using aadog.PInvoke.LibGum.Enums;
 
 namespace aadog.PInvoke.LibGum
 { 
-    public partial class LibGum
+    public partial class LibGumFunctions
     {
         const string DllName = "Gum";
 #if Windows
