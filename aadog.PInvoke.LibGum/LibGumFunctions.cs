@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using aadog.PInvoke.LibGum.Enums;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace aadog.PInvoke.LibGum
 { 
@@ -166,12 +167,12 @@ namespace aadog.PInvoke.LibGum
         public static unsafe partial void _g_object_unref(void* data);
         [LibraryImport(DllName)]
         public static unsafe partial void _frida_g_object_unref(void* data);
-        public static unsafe void g_object_unref(GError* error)
+        public static unsafe void g_object_unref(void* data)
         {
             if (IsWindows)
-                _g_object_unref(error);
+                _g_object_unref(data);
             else
-                _frida_g_object_unref(error);
+                _frida_g_object_unref(data);
         }
 
         [LibraryImport(DllName, EntryPoint = "g_object_ref")]
