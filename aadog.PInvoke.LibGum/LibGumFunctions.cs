@@ -5,12 +5,9 @@ namespace aadog.PInvoke.LibGum
 { 
     public partial class LibGumFunctions
     {
+        public static bool IsWindows = false;
         const string DllName = "Gum";
-#if Windows
-        private const string Frida_LibPrefix = "";
-#else
-        private const string Frida_LibPrefix = "_frida_";
-#endif
+
 
         public unsafe delegate void GObjectFinalize(IntPtr gObject);
 
@@ -51,8 +48,20 @@ namespace aadog.PInvoke.LibGum
             IntPtr user_data);
 
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_print")]
-        public static partial void g_print([MarshalAs(UnmanagedType.LPUTF8Str)] string format);
+
+        [LibraryImport(DllName,EntryPoint = "g_print")]
+        public static partial void _g_print([MarshalAs(UnmanagedType.LPUTF8Str)] string format);
+        [LibraryImport(DllName)]
+        public static partial void _frida_g_print([MarshalAs(UnmanagedType.LPUTF8Str)] string format);
+
+        public void g_print(string format)
+        {
+            if(isWindows)
+                _g_print(format);
+            else
+                _frida_g_print(format);
+        }
+
 
         [LibraryImport(DllName)]
         public static partial void gum_init_embedded();
@@ -70,18 +79,57 @@ namespace aadog.PInvoke.LibGum
         public static partial void gum_deinit();
 
         /*g_error*/
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_error_free")]
-        public static unsafe partial void g_error_free(GError* error);
+        [LibraryImport(DllName, EntryPoint = "g_error_free")]
+        public static unsafe partial void _g_error_free(GError* error);
+        [LibraryImport(DllName)]
+        public static unsafe partial void _frida_g_error_free(GError* error);
+        public static unsafe void g_error_free(GError* error)
+        {
+            if (IsWindows)
+                _g_error_free(error);
+            else
+                _frida_g_error_free(error);
+        }
 
         /*g_memory*/
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_malloc")]
-        public static unsafe partial IntPtr g_malloc(gsize n_bytes);
+        [LibraryImport(DllName, EntryPoint = $"g_malloc")]
+        public static unsafe partial IntPtr _g_malloc(gsize n_bytes);
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_malloc(gsize n_bytes);
+        public static unsafe IntPtr g_malloc(gsize n_bytes)
+        {
+            if (IsWindows)
+                return _g_malloc(n_bytes);
+            else
+                return _frida_g_malloc(n_bytes);
+        }
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_free")]
-        public static unsafe partial void g_free(IntPtr mem);
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_get_memdup")]
-        public static unsafe partial IntPtr g_memdup(IntPtr mem, guint byte_size);
+        [LibraryImport(DllName, EntryPoint = $"g_free")]
+        public static unsafe partial void _g_free(IntPtr mem);
+        [LibraryImport(DllName)]
+        public static unsafe partial void _frida_g_free(IntPtr mem);
+        public static unsafe void g_free(IntPtr mem)
+        {
+            if (IsWindows)
+                _g_free(mem);
+            else
+                _frida_g_free(mem);
+        }
+
+
+
+        [LibraryImport(DllName, EntryPoint = $"g_get_memdup")]
+        public static unsafe partial IntPtr _g_memdup(IntPtr mem, guint byte_size);
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_memdup(IntPtr mem, guint byte_size);
+        public static unsafe IntPtr g_memdup(IntPtr mem, guint byte_size)
+        {
+            if (IsWindows)
+                return _g_memdup(mem,byte_size);
+            else
+                return _frida_g_memdup(mem, byte_size);
+        }
 
 
         /*gum_memory*/
@@ -114,15 +162,45 @@ namespace aadog.PInvoke.LibGum
 
 
         /*g_object*/
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_object_ref")]
-        public static unsafe partial void g_object_ref(gpointer obj);
+        [LibraryImport(DllName, EntryPoint = "g_object_unref")]
+        public static unsafe partial void _g_object_unref(void* data);
+        [LibraryImport(DllName)]
+        public static unsafe partial void _frida_g_object_unref(void* data);
+        public static unsafe void g_object_unref(GError* error)
+        {
+            if (IsWindows)
+                _g_object_unref(error);
+            else
+                _frida_g_object_unref(error);
+        }
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_object_unref")]
-        public static unsafe partial void g_object_unref(gpointer obj);
+        [LibraryImport(DllName, EntryPoint = "g_object_ref")]
+        public static unsafe partial void* _g_object_ref(void* obj);
+        [LibraryImport(DllName)]
+        public static unsafe partial void* _frida_g_object_ref(void* obj);
+        public static unsafe void* g_object_ref(void* obj)
+        {
+            if (IsWindows)
+                return _g_object_ref(obj);
+            else
+                return _frida_g_object_ref(obj);
+        }
+
+
+
 
         /*g_quark*/
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_quark_to_string")]
-        public static unsafe partial char* g_quark_to_string(GQuark quark);
+        [LibraryImport(DllName, EntryPoint = $"g_quark_to_string")]
+        public static unsafe partial char* _g_quark_to_string(GQuark quark);
+        [LibraryImport(DllName)]
+        public static unsafe partial char* _frida_g_quark_to_string(GQuark quark);
+        public static unsafe char* g_quark_to_string(GQuark quark)
+        {
+            if (IsWindows)
+                return _g_quark_to_string(quark);
+            else
+                return _frida_g_quark_to_string(quark);
+        }
 
 
         /*gum_resolver*/
@@ -392,49 +470,214 @@ namespace aadog.PInvoke.LibGum
         public static unsafe partial void gum_memory_access_monitor_disable(GumMemoryAccessMonitor* self);
 
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_get_current_dir")]
-        public static unsafe partial IntPtr g_get_current_dir();
+        [LibraryImport(DllName, EntryPoint = $"g_get_current_dir")]
+        public static unsafe partial IntPtr _g_get_current_dir();
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_get_current_dir();
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_path_get_basename")]
-        public static unsafe partial IntPtr g_path_get_basename(gchar* file_name);
+        public static IntPtr g_get_current_dir()
+        {
+            if (IsWindows)
+                return _g_get_current_dir();
+            else
+                return _frida_g_get_current_dir();
+        }
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_path_get_dirname")]
-        public static unsafe partial IntPtr g_path_get_dirname(gchar* file_name);
+
+        [LibraryImport(DllName, EntryPoint = $"g_path_get_basename")]
+        public static unsafe partial IntPtr _g_path_get_basename(gchar* file_name);
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_path_get_basename(gchar* file_name);
+
+        public static unsafe IntPtr g_path_get_basename(gchar* file_name)
+        {
+            if (IsWindows)
+                return _g_path_get_basename(file_name);
+            else
+                return _frida_g_path_get_basename(file_name);
+        }
 
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_get_user_name")]
-        public static unsafe partial IntPtr g_get_user_name();
+        [LibraryImport(DllName, EntryPoint = $"g_path_get_dirname")]
+        public static unsafe partial IntPtr _g_path_get_dirname(gchar* file_name);
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_path_get_dirname(gchar* file_name);
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_get_real_name")]
-        public static unsafe partial IntPtr g_get_real_name();
+        public static unsafe IntPtr g_path_get_dirname(gchar* file_name)
+        {
+            if (IsWindows)
+                return _g_path_get_dirname(file_name);
+            else
+                return _frida_g_path_get_dirname(file_name);
+        }
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_get_home_dir")]
-        public static unsafe partial IntPtr g_get_home_dir();
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_get_tmp_dir")]
-        public static unsafe partial IntPtr g_get_tmp_dir();
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_get_host_name")]
-        public static unsafe partial IntPtr g_get_host_name();
+        [LibraryImport(DllName, EntryPoint = $"g_get_user_name")]
+        public static unsafe partial IntPtr _g_get_user_name();
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_get_user_name();
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_get_application_name")]
-        public static unsafe partial IntPtr g_get_application_name();
+        public static IntPtr g_get_user_name()
+        {
+            if (IsWindows)
+                return _g_get_user_name();
+            else
+                return _frida_g_get_user_name();
+        }
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_filename_display_name")]
-        public static unsafe partial IntPtr g_filename_display_name(IntPtr filename);
+
+        [LibraryImport(DllName, EntryPoint = $"g_get_real_name")]
+        public static unsafe partial IntPtr _g_get_real_name();
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_get_real_name();
+
+        public static IntPtr g_get_real_name()
+        {
+            if (IsWindows)
+                return _g_get_real_name();
+            else
+                return _frida_g_get_real_name();
+        }
+
+
+        [LibraryImport(DllName, EntryPoint = $"g_get_home_dir")]
+        public static unsafe partial IntPtr _g_get_home_dir();
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_get_home_dir();
+
+        public static IntPtr g_get_home_dir()
+        {
+            if (IsWindows)
+                return _g_get_home_dir();
+            else
+                return _frida_g_get_home_dir();
+        }
+
+
+        [LibraryImport(DllName, EntryPoint = $"g_get_tmp_dir")]
+        public static unsafe partial IntPtr _g_get_tmp_dir();
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_get_tmp_dir();
+
+        public static IntPtr g_get_tmp_dir()
+        {
+            if (IsWindows)
+                return _g_get_tmp_dir();
+            else
+                return _frida_g_get_tmp_dir();
+        }
+
+        [LibraryImport(DllName, EntryPoint = $"g_get_host_name")]
+        public static unsafe partial IntPtr _g_get_host_name();
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_get_host_name();
+
+        public static IntPtr g_get_host_name()
+        {
+            if (IsWindows)
+                return _g_get_host_name();
+            else
+                return _frida_g_get_host_name();
+        }
+
+
+        [LibraryImport(DllName, EntryPoint = $"g_get_application_name")]
+        public static unsafe partial IntPtr _g_get_application_name();
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_get_application_name();
+
+        public static IntPtr g_get_application_name()
+        {
+            if (IsWindows)
+                return _g_get_application_name();
+            else
+                return _frida_g_get_application_name();
+        }
+
+
+        [LibraryImport(DllName, EntryPoint = $"g_filename_display_name")]
+        public static unsafe partial IntPtr _g_filename_display_name(IntPtr filename);
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_filename_display_name(IntPtr filename);
+
+        public static IntPtr g_filename_display_name(IntPtr filename)
+        {
+            if (IsWindows)
+                return _g_filename_display_name(filename);
+            else
+                return _frida_g_filename_display_name(filename);
+        }
+
 
 
         /*g_bytes*/
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_bytes_new")]
-        public static unsafe partial GBytes* g_bytes_new(IntPtr data,gsize size);
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_bytes_unref")]
-        public static unsafe partial void g_bytes_unref(GBytes* bytes);
+        [LibraryImport(DllName, EntryPoint = $"g_bytes_new")]
+        public static unsafe partial GBytes* _g_bytes_new(IntPtr data, gsize size);
+        [LibraryImport(DllName)]
+        public static unsafe partial GBytes* _frida_g_bytes_new(IntPtr data, gsize size);
+        public static unsafe GBytes* g_bytes_new(IntPtr data, gsize size)
+        {
+            if (IsWindows)
+                return _g_bytes_new(data, size);
+            else
+                return _frida_g_bytes_new(data, size);
+        }
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_bytes_get_size")]
-        public static unsafe partial gsize g_bytes_get_size(GBytes* bytes);
 
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_bytes_get_data")]
-        public static unsafe partial IntPtr g_bytes_get_data(GBytes* bytes, gsize* size);
+
+        [LibraryImport(DllName, EntryPoint = "g_bytes_unref")]
+        public static unsafe partial void _g_bytes_unref(GBytes* bytes);
+        [LibraryImport(DllName)]
+        public static unsafe partial void _frida_g_bytes_unref(GBytes* bytes);
+        public static unsafe void g_bytes_unref(GBytes* bytes)
+        {
+            if (IsWindows)
+                g_bytes_unref(bytes);
+            else
+                _frida_g_bytes_unref(bytes);
+        }
+
+
+
+
+        [LibraryImport(DllName)]
+        public static unsafe partial void _frida_g_bytes_unref(GBytes* bytes);
+        public static unsafe void g_bytes_unref(GBytes* bytes)
+        {
+            if (IsWindows)
+                g_bytes_unref(bytes);
+            else
+                _frida_g_bytes_unref(bytes);
+        }
+
+        [LibraryImport(DllName, EntryPoint = "g_bytes_get_size")]
+        public static unsafe partial gsize _g_bytes_get_size(GBytes* bytes);
+        [LibraryImport(DllName)]
+        public static unsafe partial gsize _frida_g_bytes_get_size(GBytes* bytes);
+        public static unsafe gsize g_bytes_get_size(GBytes* bytes)
+        {
+            if (IsWindows)
+                return _g_bytes_get_size(bytes);
+            else
+                return _frida_g_bytes_get_size(bytes);
+        }
+
+
+
+
+
+        [LibraryImport(DllName, EntryPoint = "g_bytes_get_data")]
+        public static unsafe partial IntPtr _g_bytes_get_data(GBytes* bytes, gsize* size);
+        [LibraryImport(DllName)]
+        public static unsafe partial IntPtr _frida_g_bytes_get_data(GBytes* bytes, gsize* size);
+        public static unsafe IntPtr g_bytes_get_data(GBytes* bytes, gsize* size)
+        {
+            if (IsWindows)
+                return _g_bytes_get_data(bytes, size);
+            else
+                return _frida_g_bytes_get_data(bytes, size);
+        }
 
         /*gum_exceptor*/
 
@@ -455,11 +698,31 @@ namespace aadog.PInvoke.LibGum
         public static unsafe partial void gum_exceptor_remove(GumExceptor* self, GumExceptionHandler func,
             IntPtr user_data);
         /*g_main_context*/
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_main_context_get_thread_default")]
-        public static unsafe partial GMainContext* g_main_context_get_thread_default();
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_main_context_pending")]
-        public static unsafe partial gboolean g_main_context_pending(GMainContext* context);
-        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_main_context_pending")]
-        public static unsafe partial gboolean g_main_context_pending(GMainContext* context, gboolean may_block);
+        [LibraryImport(DllName, EntryPoint = $"g_main_context_get_thread_default")]
+        public static unsafe partial GMainContext* _g_main_context_get_thread_default();
+
+        [LibraryImport(DllName)]
+        public static unsafe partial GMainContext* _frida_g_main_context_get_thread_default();
+        public static unsafe GMainContext* g_main_context_get_thread_default()
+        {
+            if (IsWindows)
+                return _g_main_context_get_thread_default();
+            else
+                return _frida_g_main_context_get_thread_default();
+        }
+
+
+        [LibraryImport(DllName, EntryPoint = $"g_main_context_pending")]
+        public static unsafe partial gboolean _g_main_context_pending(GMainContext* context);
+        [LibraryImport(DllName)]
+        public static unsafe partial gboolean _frida_g_main_context_pending(GMainContext* context);
+        public static unsafe gboolean g_main_context_pending(GMainContext* context)
+        {
+            if (IsWindows)
+                return _g_main_context_pending(context);
+            else
+                return _frida_g_main_context_pending(context);
+        }
+
     }
 }
