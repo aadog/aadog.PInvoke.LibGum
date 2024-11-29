@@ -423,6 +423,19 @@ namespace aadog.PInvoke.LibGum
         [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_filename_display_name")]
         public static unsafe partial IntPtr g_filename_display_name(IntPtr filename);
 
+
+        /*g_bytes*/
+        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_bytes_new")]
+        public static unsafe partial GBytes* g_bytes_new(IntPtr data,gsize size);
+        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_bytes_unref")]
+        public static unsafe partial void g_bytes_unref(GBytes* bytes);
+
+        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_bytes_get_size")]
+        public static unsafe partial gsize g_bytes_get_size(GBytes* bytes);
+
+        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_bytes_get_data")]
+        public static unsafe partial IntPtr g_bytes_get_data(GBytes* bytes, gsize* size);
+
         /*gum_exceptor*/
 
         [LibraryImport(DllName)]
