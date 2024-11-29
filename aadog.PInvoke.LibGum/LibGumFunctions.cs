@@ -454,5 +454,12 @@ namespace aadog.PInvoke.LibGum
         [LibraryImport(DllName)]
         public static unsafe partial void gum_exceptor_remove(GumExceptor* self, GumExceptionHandler func,
             IntPtr user_data);
+        /*g_main_context*/
+        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_main_context_get_thread_default")]
+        public static unsafe partial GMainContext* g_main_context_get_thread_default();
+        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_main_context_pending")]
+        public static unsafe partial gboolean g_main_context_pending(GMainContext* context);
+        [LibraryImport(DllName, EntryPoint = $"{Frida_LibPrefix}g_main_context_pending")]
+        public static unsafe partial gboolean g_main_context_pending(GMainContext* context, gboolean may_block);
     }
 }
